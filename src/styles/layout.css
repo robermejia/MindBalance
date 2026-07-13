@@ -96,6 +96,13 @@
   gap: 12px;
 }
 
+.header-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: var(--transition-fast);
+}
+
 .menu-toggle-btn {
   display: none;
   background: none;
@@ -157,5 +164,14 @@
   
   .header {
     padding: 0 20px;
+  }
+
+  .header-title {
+    font-size: 0.95rem;
+    line-height: 1.2;
+    max-width: 170px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

@@ -20,7 +20,7 @@ export const Header: React.FC<HeaderProps> = ({ title, onOpenMobileMenu }) => {
         <button className="menu-toggle-btn" onClick={onOpenMobileMenu}>
           <Menu size={24} />
         </button>
-        <h1 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{title}</h1>
+        <h1 className="header-title">{title}</h1>
       </div>
 
       <div className="header-actions">
