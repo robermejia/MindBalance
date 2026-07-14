@@ -10,7 +10,9 @@ import {
   Languages, 
   Sun, 
   Moon, 
-  CheckCircle2 
+  CheckCircle2,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { mockRepositoryInstance } from '../../services/mockRepository';
 import { isFirebaseConfigured } from '../../services';
@@ -21,6 +23,7 @@ export const Settings: React.FC = () => {
   const [language, setLanguage] = useState<'es' | 'en'>('es');
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showCreds, setShowCreds] = useState(false);
 
   const firebaseReady = isFirebaseConfigured();
 
@@ -160,27 +163,51 @@ export const Settings: React.FC = () => {
         </div>
 
         <div>
-          <h3 style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '12px' }}>Credenciales de Firebase</h3>
-          <div style={{
-            padding: '16px',
-            backgroundColor: 'var(--bg-primary)',
-            borderRadius: '8px',
-            fontFamily: 'monospace',
-            fontSize: '0.8rem',
-            border: '1px solid var(--border-color)',
-            overflowX: 'auto',
-            whiteSpace: 'pre-wrap'
-          }}>
-            {`{
-  apiKey: "AIzaSyCUwLMBtmc_tFuuAiW1BwUEaGd8HLxX0s0",
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+            <h3 style={{ fontSize: '0.95rem', fontWeight: 600, margin: 0 }}>Credenciales de Firebase</h3>
+            <button
+              onClick={() => setShowCreds(!showCreds)}
+              className="btn btn-secondary"
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', padding: '4px 10px', height: 'fit-content' }}
+            >
+              {showCreds ? (
+                <>
+                  <EyeOff size={14} />
+                  <span>Ocultar claves</span>
+                </>
+              ) : (
+                <>
+                  <Eye size={14} />
+                  <span>Mostrar claves (Enmascaradas)</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          {showCreds && (
+            <div className="fade-in" style={{
+              padding: '16px',
+              backgroundColor: 'var(--bg-primary)',
+              borderRadius: '8px',
+              fontFamily: 'monospace',
+              fontSize: '0.8rem',
+              border: '1px solid var(--border-color)',
+              overflowX: 'auto',
+              whiteSpace: 'pre-wrap',
+              marginBottom: '12px'
+            }}>
+              {`{
+  apiKey: "AIzaSyCUwLMBtmc_...HLxX0s0",
   authDomain: "mindbalance-514f8.firebaseapp.com",
   projectId: "mindbalance-514f8",
   storageBucket: "mindbalance-514f8.firebasestorage.app",
   messagingSenderId: "870536535995",
-  appId: "1:870536535995:web:17a88fddd6c169a4db6e9e"
+  appId: "1:870536535995:web:...b6e9e"
 }`}
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+            </div>
+          )}
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
             {firebaseReady ? (
               <>
                 <CloudCheck size={16} style={{ color: 'var(--accent-success)' }} />
