@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { Wind, Lock, Mail, ShieldAlert } from 'lucide-react';
 
 export const AuthShell: React.FC = () => {
-  const { login, signup, loginWithGoogle, useFirebase } = useAuth();
+  const { login, signup, loginWithGoogle, useFirebase, toggleFirebase } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -201,6 +201,37 @@ export const AuthShell: React.FC = () => {
               </button>
             </div>
           )}
+
+          {/* Selector de Base de Datos para salir del deadlock */}
+          <div style={{
+            marginTop: '24px',
+            paddingTop: '16px',
+            borderTop: '1px solid var(--border-color)',
+            textAlign: 'center'
+          }}>
+            <button
+              type="button"
+              onClick={() => {
+                toggleFirebase(!useFirebase);
+                setError(null);
+              }}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-muted)',
+                fontSize: '0.75rem',
+                cursor: 'pointer',
+                textDecoration: 'underline',
+                transition: 'color 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'var(--accent-primary)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+            >
+              {useFirebase 
+                ? "Cambiar a Modo Local (Sin Conexión/Evaluación)" 
+                : "Cambiar a Modo Sincronizado (Firebase)"}
+            </button>
+          </div>
 
         </div>
 
