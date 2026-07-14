@@ -8,7 +8,7 @@ import {
   firebaseRepositoryInstance,
   mockRepositoryInstance
 } from '../services';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, getRedirectResult } from 'firebase/auth';
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -38,6 +38,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (useFirebase && isFirebaseConfigured()) {
         const auth = firebaseRepositoryInstance.getAuthInstance();
         if (auth) {
+          // Procesar el resultado de la redirección al inicializar
+          try {
+            await getRedirectResult(auth);
+          } catch (error) {
+            console.error("Error de redirección de Google Auth:", error);
+          }
+
           unsubscribeFirebase = onAuthStateChanged(auth, async (fbUser) => {
             if (fbUser) {
               try {
