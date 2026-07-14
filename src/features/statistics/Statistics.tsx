@@ -10,6 +10,7 @@ import {
 import { getRepository } from '../../services';
 import type { CbtRecord, ExerciseSession } from '../../services';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { Line, Radar, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -36,9 +37,20 @@ type EmotionKey = 'ansiedad' | 'miedo' | 'tristeza' | 'molestia' | 'verguenza' |
 
 export const Statistics: React.FC = () => {
   const { user } = useAuth();
+  const { theme } = useTheme();
   const [loading, setLoading] = useState(true);
   const [cbtRecords, setCbtRecords] = useState<CbtRecord[]>([]);
   const [exercises, setExercises] = useState<ExerciseSession[]>([]);
+
+  const isDark = theme === 'dark';
+  const tickColor = isDark ? '#94A3B8' : '#475569';
+  const textSecondaryColor = isDark ? '#CBD5E1' : '#334155';
+  const gridColor = isDark ? '#334155' : '#E2E8F0';
+  const tooltipBg = isDark ? '#1E293B' : '#FFFFFF';
+  const tooltipTitle = isDark ? '#F8FAFC' : '#0F172A';
+  const tooltipBody = isDark ? '#94A3B8' : '#475569';
+  const tooltipBorder = isDark ? '#334155' : '#E2E8F0';
+  const doughnutBorder = isDark ? '#1e293b' : '#ffffff';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -168,15 +180,15 @@ export const Statistics: React.FC = () => {
     },
     scales: {
       r: {
-        angleLines: { color: 'var(--border-color)' },
-        grid: { color: 'var(--border-color)' },
+        angleLines: { color: gridColor },
+        grid: { color: gridColor },
         pointLabels: {
-          color: 'var(--text-secondary)',
+          color: textSecondaryColor,
           font: { size: 12, weight: 'bold' as const }
         },
         ticks: {
           backdropColor: 'transparent',
-          color: 'var(--text-muted)',
+          color: tickColor,
           showLabelBackdrop: false
         },
         min: 0,
@@ -212,10 +224,10 @@ export const Statistics: React.FC = () => {
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: 'var(--bg-secondary)',
-        titleColor: 'var(--text-primary)',
-        bodyColor: 'var(--text-secondary)',
-        borderColor: 'var(--border-color)',
+        backgroundColor: tooltipBg,
+        titleColor: tooltipTitle,
+        bodyColor: tooltipBody,
+        borderColor: tooltipBorder,
         borderWidth: 1,
         cornerRadius: 8
       }
@@ -223,13 +235,13 @@ export const Statistics: React.FC = () => {
     scales: {
       x: {
         grid: { display: false },
-        ticks: { color: 'var(--text-muted)' }
+        ticks: { color: tickColor }
       },
       y: {
         min: 0,
         max: 100,
-        grid: { color: 'var(--border-color)' },
-        ticks: { color: 'var(--text-muted)' }
+        grid: { color: gridColor },
+        ticks: { color: tickColor }
       }
     }
   };
@@ -255,7 +267,7 @@ export const Statistics: React.FC = () => {
             '#F59E0B'  // naranja
           ],
           borderWidth: 1,
-          borderColor: 'var(--bg-secondary)'
+          borderColor: doughnutBorder
         }
       ]
     };
@@ -268,7 +280,7 @@ export const Statistics: React.FC = () => {
       legend: {
         position: 'right' as const,
         labels: {
-          color: 'var(--text-secondary)',
+          color: textSecondaryColor,
           boxWidth: 10,
           font: { size: 10 }
         }

@@ -11,6 +11,7 @@ import {
 import { getRepository } from '../../services';
 import type { CbtRecord, ExerciseSession } from '../../services';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -180,6 +181,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
     };
   };
 
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  const tickColor = isDark ? '#94A3B8' : '#475569';
+  const gridColor = isDark ? '#334155' : '#E2E8F0';
+  const tooltipBg = isDark ? '#1E293B' : '#FFFFFF';
+  const tooltipTitle = isDark ? '#F8FAFC' : '#0F172A';
+  const tooltipBody = isDark ? '#94A3B8' : '#475569';
+  const tooltipBorder = isDark ? '#334155' : '#E2E8F0';
+
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -190,10 +200,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       tooltip: {
         mode: 'index' as const,
         intersect: false,
-        backgroundColor: 'var(--bg-secondary)',
-        titleColor: 'var(--text-primary)',
-        bodyColor: 'var(--text-secondary)',
-        borderColor: 'var(--border-color)',
+        backgroundColor: tooltipBg,
+        titleColor: tooltipTitle,
+        bodyColor: tooltipBody,
+        borderColor: tooltipBorder,
         borderWidth: 1,
         padding: 12,
         cornerRadius: 8,
@@ -205,11 +215,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         min: 0,
         max: 100,
         grid: {
-          color: 'var(--border-color)',
+          color: gridColor,
           drawTicks: false
         },
         ticks: {
-          color: 'var(--text-muted)',
+          color: tickColor,
           font: { size: 10 }
         }
       },
@@ -218,7 +228,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
           display: false
         },
         ticks: {
-          color: 'var(--text-muted)',
+          color: tickColor,
           font: { size: 10 }
         }
       }

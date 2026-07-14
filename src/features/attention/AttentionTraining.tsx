@@ -12,6 +12,7 @@ import {
 import { getRepository } from '../../services';
 import type { AttentionRecord } from '../../services';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -34,9 +35,19 @@ ChartJS.register(
 
 export const AttentionTraining: React.FC = () => {
   const { user } = useAuth();
+  const { theme } = useTheme();
   const [loading, setLoading] = useState(true);
   const [history, setHistory] = useState<AttentionRecord[]>([]);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+
+  const isDark = theme === 'dark';
+  const tickColor = isDark ? '#94A3B8' : '#475569';
+  const textSecondaryColor = isDark ? '#CBD5E1' : '#334155';
+  const gridColor = isDark ? '#334155' : '#E2E8F0';
+  const tooltipBg = isDark ? '#1E293B' : '#FFFFFF';
+  const tooltipTitle = isDark ? '#F8FAFC' : '#0F172A';
+  const tooltipBody = isDark ? '#94A3B8' : '#475569';
+  const tooltipBorder = isDark ? '#334155' : '#E2E8F0';
 
   // Form State
   const [neutral, setNeutral] = useState(0);
@@ -146,16 +157,16 @@ export const AttentionTraining: React.FC = () => {
       legend: {
         position: 'bottom' as const,
         labels: {
-          color: 'var(--text-secondary)',
+          color: textSecondaryColor,
           boxWidth: 12,
           font: { size: 11 }
         }
       },
       tooltip: {
-        backgroundColor: 'var(--bg-secondary)',
-        titleColor: 'var(--text-primary)',
-        bodyColor: 'var(--text-secondary)',
-        borderColor: 'var(--border-color)',
+        backgroundColor: tooltipBg,
+        titleColor: tooltipTitle,
+        bodyColor: tooltipBody,
+        borderColor: tooltipBorder,
         borderWidth: 1,
         cornerRadius: 8
       }
@@ -164,12 +175,12 @@ export const AttentionTraining: React.FC = () => {
       x: {
         stacked: false,
         grid: { display: false },
-        ticks: { color: 'var(--text-muted)' }
+        ticks: { color: tickColor }
       },
       y: {
         stacked: false,
-        grid: { color: 'var(--border-color)' },
-        ticks: { color: 'var(--text-muted)', precision: 0 }
+        grid: { color: gridColor },
+        ticks: { color: tickColor, precision: 0 }
       }
     }
   };
