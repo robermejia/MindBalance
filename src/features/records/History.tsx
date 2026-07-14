@@ -177,11 +177,9 @@ export const History: React.FC = () => {
       {filteredRecords.length > 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {filteredRecords.map((record) => {
-            const dateStr = new Date(record.date).toLocaleDateString('es-ES', { 
-              weekday: 'short', 
-              day: 'numeric', 
-              month: 'short' 
-            });
+            const dateObj = new Date(record.date);
+            const weekdayStr = dateObj.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '');
+            const dayStr = dateObj.toLocaleDateString('es-ES', { day: 'numeric' });
             
             return (
               <div 
@@ -213,10 +211,10 @@ export const History: React.FC = () => {
                     flexShrink: 0
                   }}>
                     <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                      {dateStr.split(' ')[0]}
+                      {weekdayStr}
                     </span>
                     <span style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '-2px' }}>
-                      {dateStr.split(' ')[1]}
+                      {dayStr}
                     </span>
                   </div>
 
