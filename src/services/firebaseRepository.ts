@@ -7,8 +7,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithPopup,
-  signInWithRedirect
+  signInWithPopup
 } from 'firebase/auth';
 import type { Auth, User as FirebaseUser } from 'firebase/auth';
 import { 
@@ -158,43 +157,28 @@ class FirebaseRepository implements IRepository {
     if (!this.isInitialized()) throw new Error('Firebase no está inicializado');
     const provider = new GoogleAuthProvider();
     
-    // Detectar si el usuario está en un dispositivo móvil
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-      // En móviles usamos redirección porque los popups suelen bloquearse
-      await signInWithRedirect(this.auth!, provider);
-      // Retornamos un objeto temporal ya que la página se redireccionará inmediatamente
-      return {
-        uid: 'redirecting',
-        email: '',
-        displayName: 'Redireccionando...',
-        photoURL: null,
-        createdAt: new Date().toISOString()
-      };
+    // Usamos signInWithPopup para todo dispositivo, ya que signInWithRedirect falla
+    // en móviles debido al bloqueo de cookies de terceros en dominios personalizados de Render.
+    const credential = await signInWithPopup(this.auth!, provider);
+    const user = credential.user;
+
+    const userDoc = await getDoc(doc(this.db!, 'users', user.uid));
+    let goals = undefined;
+    if (userDoc.exists()) {
+      goals = userDoc.data().goals;
     } else {
-      // En computadoras de escritorio usamos Popup para evitar recargar la aplicación
-      const credential = await signInWithPopup(this.auth!, provider);
-      const user = credential.user;
-
-      const userDoc = await getDoc(doc(this.db!, 'users', user.uid));
-      let goals = undefined;
-      if (userDoc.exists()) {
-        goals = userDoc.data().goals;
-      } else {
-        goals = 'Practicar la observación sin juzgar, aprender a reestructurar pensamientos y cultivar una atención más equilibrada.';
-        await setDoc(doc(this.db!, 'users', user.uid), {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-          goals,
-          createdAt: new Date().toISOString()
-        });
-      }
-
-      return this.mapFirebaseUser(user, goals);
+      goals = 'Practicar la observación sin juzgar, aprender a reestructurar pensamientos y cultivar una atención más equilibrada.';
+      await setDoc(doc(this.db!, 'users', user.uid), {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        goals,
+        createdAt: new Date().toISOString()
+      });
     }
+
+    return this.mapFirebaseUser(user, goals);
   }
 
   // Implementa loginSimulated (para alinearse con IRepository)
