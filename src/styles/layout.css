@@ -178,11 +178,9 @@
   }
 
   .header-title {
-    font-size: 0.95rem;
-    line-height: 1.2;
-    max-width: 170px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 0.85rem;
+    line-height: 1.25;
+    max-width: 160px;
+    white-space: normal;
   }
 }
