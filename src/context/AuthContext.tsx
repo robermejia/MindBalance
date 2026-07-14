@@ -2,11 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { UserProfile } from '../services/interfaces';
 import { 
   getRepository, 
-  getUseFirebaseSetting, 
-  setUseFirebaseSetting, 
   isFirebaseConfigured, 
-  firebaseRepositoryInstance,
-  mockRepositoryInstance
+  firebaseRepositoryInstance
 } from '../services';
 import { onAuthStateChanged, getRedirectResult } from 'firebase/auth';
 
@@ -27,15 +24,15 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [useFirebase, setUseFirebase] = useState<boolean>(getUseFirebaseSetting);
+  const useFirebase = true; // Firebase es obligatorio en producción
 
-  // Efecto para escuchar el estado de autenticación (Firebase vs Mock)
+  // Efecto para escuchar el estado de autenticación de Firebase
   useEffect(() => {
     let unsubscribeFirebase: (() => void) | null = null;
     setLoading(true);
 
     const initAuth = async () => {
-      if (useFirebase && isFirebaseConfigured()) {
+      if (isFirebaseConfigured()) {
         const auth = firebaseRepositoryInstance.getAuthInstance();
         if (auth) {
           // Procesar el resultado de la redirección al inicializar (sin bloquear el registro del listener)
@@ -61,16 +58,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       }
 
-      // Si no es Firebase o Firebase no está configurado, usamos Mock
-      try {
-        const mockUser = await mockRepositoryInstance.getCurrentUser();
-        setUser(mockUser);
-      } catch (error) {
-        console.error("Error al obtener usuario de MockRepository:", error);
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
+      // Si Firebase no está configurado, la app se detiene en estado desautenticado
+      setUser(null);
+      setLoading(false);
     };
 
     initAuth();
@@ -78,19 +68,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => {
       if (unsubscribeFirebase) unsubscribeFirebase();
     };
-  }, [useFirebase]);
+  }, []);
 
   const login = async (email: string, password?: string) => {
     setLoading(true);
     try {
-      if (useFirebase && isFirebaseConfigured()) {
-        if (!password) throw new Error('Se requiere contraseña para iniciar sesión en Firebase');
-        const profile = await firebaseRepositoryInstance.loginWithEmail(email, password);
-        setUser(profile);
-      } else {
-        const profile = await mockRepositoryInstance.loginSimulated(email);
-        setUser(profile);
-      }
+      if (!isFirebaseConfigured()) throw new Error('Firebase no está configurado');
+      if (!password) throw new Error('Se requiere contraseña para iniciar sesión');
+      const profile = await firebaseRepositoryInstance.loginWithEmail(email, password);
+      setUser(profile);
     } catch (error) {
       setUser(null);
       throw error;
@@ -102,14 +88,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signup = async (email: string, password?: string) => {
     setLoading(true);
     try {
-      if (useFirebase && isFirebaseConfigured()) {
-        if (!password) throw new Error('Se requiere contraseña para registrarse en Firebase');
-        const profile = await firebaseRepositoryInstance.signupWithEmail(email, password);
-        setUser(profile);
-      } else {
-        const profile = await mockRepositoryInstance.loginSimulated(email);
-        setUser(profile);
-      }
+      if (!isFirebaseConfigured()) throw new Error('Firebase no está configurado');
+      if (!password) throw new Error('Se requiere contraseña para registrarse');
+      const profile = await firebaseRepositoryInstance.signupWithEmail(email, password);
+      setUser(profile);
     } catch (error) {
       setUser(null);
       throw error;
@@ -119,19 +101,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const loginWithGoogle = async () => {
-    if (useFirebase && isFirebaseConfigured()) {
-      setLoading(true);
-      try {
-        const profile = await firebaseRepositoryInstance.loginWithGoogle();
-        setUser(profile);
-      } catch (error) {
-        setUser(null);
-        throw error;
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      throw new Error('Google Sign-In requiere activar y configurar Firebase primero.');
+    if (!isFirebaseConfigured()) {
+      throw new Error('Google Sign-In requiere configurar Firebase primero.');
+    }
+    setLoading(true);
+    try {
+      const profile = await firebaseRepositoryInstance.loginWithGoogle();
+      setUser(profile);
+    } catch (error) {
+      setUser(null);
+      throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -158,9 +139,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const toggleFirebase = (active: boolean) => {
-    setUseFirebaseSetting(active);
-    setUseFirebase(active);
+  const toggleFirebase = (_active: boolean) => {
+    // No-op en producción, Firebase siempre está activo
   };
 
   return (
