@@ -152,7 +152,7 @@ export const Profile: React.FC = () => {
               disabled
               style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-muted)', cursor: 'not-allowed' }}
             />
-            <span className="form-label-desc">El correo electrónico está ligado a tu cuenta y no se puede modificar.</span>
+            <span className="form-label-desc" style={{ marginTop: '6px' }}>El correo electrónico está ligado a tu cuenta y no se puede modificar.</span>
           </div>
 
           {/* Objetivos */}
