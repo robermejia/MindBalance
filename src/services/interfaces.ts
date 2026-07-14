@@ -73,16 +73,16 @@ export interface IRepository {
   updateProfile(uid: string, data: Partial<UserProfile>): Promise<void>;
 
   // CBT Records
-  saveCbtRecord(record: Omit<CbtRecord, 'id' | 'userId' | 'date'>): Promise<CbtRecord>;
+  saveCbtRecord(record: Omit<CbtRecord, 'id' | 'userId' | 'date'> & { date?: string }): Promise<CbtRecord>;
   getCbtRecords(): Promise<CbtRecord[]>;
   deleteCbtRecord(id: string): Promise<void>;
 
   // Attention Training
-  saveAttentionRecord(record: Omit<AttentionRecord, 'id' | 'userId' | 'date'>): Promise<AttentionRecord>;
+  saveAttentionRecord(record: Omit<AttentionRecord, 'id' | 'userId' | 'date'> & { date?: string }): Promise<AttentionRecord>;
   getAttentionRecords(): Promise<AttentionRecord[]>;
 
   // Exercises
-  saveExerciseSession(session: Omit<ExerciseSession, 'id' | 'userId' | 'date'>): Promise<ExerciseSession>;
+  saveExerciseSession(session: Omit<ExerciseSession, 'id' | 'userId' | 'date'> & { date?: string }): Promise<ExerciseSession>;
   getExerciseSessions(): Promise<ExerciseSession[]>;
 
   // Settings

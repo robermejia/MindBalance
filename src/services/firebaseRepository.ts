@@ -197,7 +197,7 @@ class FirebaseRepository implements IRepository {
     await setDoc(doc(this.db!, 'users', uid), data, { merge: true });
   }
 
-  async saveCbtRecord(record: Omit<CbtRecord, 'id' | 'userId' | 'date'>): Promise<CbtRecord> {
+  async saveCbtRecord(record: Omit<CbtRecord, 'id' | 'userId' | 'date'> & { date?: string }): Promise<CbtRecord> {
     if (!this.isInitialized()) throw new Error('Firebase no está inicializado');
     const currentUser = this.auth!.currentUser;
     if (!currentUser) throw new Error('No autenticado');
@@ -205,7 +205,7 @@ class FirebaseRepository implements IRepository {
     const newRecord = {
       ...record,
       userId: currentUser.uid,
-      date: new Date().toISOString()
+      date: record.date || new Date().toISOString()
     };
 
     const docRef = await addDoc(collection(this.db!, 'daily_records'), newRecord);
@@ -240,7 +240,7 @@ class FirebaseRepository implements IRepository {
     await deleteDoc(doc(this.db!, 'daily_records', id));
   }
 
-  async saveAttentionRecord(record: Omit<AttentionRecord, 'id' | 'userId' | 'date'>): Promise<AttentionRecord> {
+  async saveAttentionRecord(record: Omit<AttentionRecord, 'id' | 'userId' | 'date'> & { date?: string }): Promise<AttentionRecord> {
     if (!this.isInitialized()) throw new Error('Firebase no está inicializado');
     const currentUser = this.auth!.currentUser;
     if (!currentUser) throw new Error('No autenticado');
@@ -248,7 +248,7 @@ class FirebaseRepository implements IRepository {
     const newRecord = {
       ...record,
       userId: currentUser.uid,
-      date: new Date().toISOString()
+      date: record.date || new Date().toISOString()
     };
 
     const docRef = await addDoc(collection(this.db!, 'attention_training'), newRecord);
@@ -277,7 +277,7 @@ class FirebaseRepository implements IRepository {
     return records.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }
 
-  async saveExerciseSession(session: Omit<ExerciseSession, 'id' | 'userId' | 'date'>): Promise<ExerciseSession> {
+  async saveExerciseSession(session: Omit<ExerciseSession, 'id' | 'userId' | 'date'> & { date?: string }): Promise<ExerciseSession> {
     if (!this.isInitialized()) throw new Error('Firebase no está inicializado');
     const currentUser = this.auth!.currentUser;
     if (!currentUser) throw new Error('No autenticado');
@@ -285,7 +285,7 @@ class FirebaseRepository implements IRepository {
     const newSession = {
       ...session,
       userId: currentUser.uid,
-      date: new Date().toISOString()
+      date: session.date || new Date().toISOString()
     };
 
     const docRef = await addDoc(collection(this.db!, 'exercises'), newSession);

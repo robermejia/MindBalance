@@ -66,7 +66,7 @@ export class MockRepository implements IRepository {
     }
   }
 
-  async saveCbtRecord(record: Omit<CbtRecord, 'id' | 'userId' | 'date'>): Promise<CbtRecord> {
+  async saveCbtRecord(record: Omit<CbtRecord, 'id' | 'userId' | 'date'> & { date?: string }): Promise<CbtRecord> {
     await delay();
     const currentUser = await this.getCurrentUser();
     if (!currentUser) throw new Error('No autenticado');
@@ -76,7 +76,7 @@ export class MockRepository implements IRepository {
       ...record,
       id: Math.random().toString(36).substring(2, 11),
       userId: currentUser.uid,
-      date: new Date().toISOString()
+      date: record.date || new Date().toISOString()
     };
 
     records.push(newRecord);
@@ -100,7 +100,7 @@ export class MockRepository implements IRepository {
     this.setStorageItem('mb_cbt_records', records);
   }
 
-  async saveAttentionRecord(record: Omit<AttentionRecord, 'id' | 'userId' | 'date'>): Promise<AttentionRecord> {
+  async saveAttentionRecord(record: Omit<AttentionRecord, 'id' | 'userId' | 'date'> & { date?: string }): Promise<AttentionRecord> {
     await delay();
     const currentUser = await this.getCurrentUser();
     if (!currentUser) throw new Error('No autenticado');
@@ -110,7 +110,7 @@ export class MockRepository implements IRepository {
       ...record,
       id: Math.random().toString(36).substring(2, 11),
       userId: currentUser.uid,
-      date: new Date().toISOString()
+      date: record.date || new Date().toISOString()
     };
 
     records.push(newRecord);
@@ -127,7 +127,7 @@ export class MockRepository implements IRepository {
     return records.filter(r => r.userId === currentUser.uid);
   }
 
-  async saveExerciseSession(session: Omit<ExerciseSession, 'id' | 'userId' | 'date'>): Promise<ExerciseSession> {
+  async saveExerciseSession(session: Omit<ExerciseSession, 'id' | 'userId' | 'date'> & { date?: string }): Promise<ExerciseSession> {
     await delay();
     const currentUser = await this.getCurrentUser();
     if (!currentUser) throw new Error('No autenticado');
@@ -137,7 +137,7 @@ export class MockRepository implements IRepository {
       ...session,
       id: Math.random().toString(36).substring(2, 11),
       userId: currentUser.uid,
-      date: new Date().toISOString()
+      date: session.date || new Date().toISOString()
     };
 
     sessions.push(newSession);
