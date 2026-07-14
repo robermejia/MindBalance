@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { 
   Database, 
+  ShieldAlert,
   Languages, 
   Sun, 
   Moon, 
