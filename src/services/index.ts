@@ -7,18 +7,11 @@ export function isFirebaseConfigured(): boolean {
 }
 
 export function getUseFirebaseSetting(): boolean {
-  const setting = localStorage.getItem('mb_use_firebase');
-  // Por defecto, si Firebase está inicializado correctamente, intentamos usarlo.
-  // Pero el usuario puede desactivarlo o activarlo en Configuración.
-  if (setting === null) {
-    return isFirebaseConfigured();
-  }
-  return setting === 'true';
+  return isFirebaseConfigured();
 }
 
-export function setUseFirebaseSetting(value: boolean): void {
-  localStorage.setItem('mb_use_firebase', value ? 'true' : 'false');
-  // Recargar la página o notificar cambio de estado para reiniciar contextos
+export function setUseFirebaseSetting(_value: boolean): void {
+  // No-op: Firebase is always enabled in the background when configured.
 }
 
 export function getRepository(): IRepository {
