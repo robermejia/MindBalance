@@ -9,7 +9,6 @@ import {
   CircleUser, 
   Settings, 
   LogOut, 
-  Wind,
   X
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -48,9 +47,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside className={`sidebar ${isOpenMobile ? 'mobile-open' : ''}`}>
       <div className="sidebar-header">
-        <span className="sidebar-logo text-gradient-cyan">
-          <Wind size={26} strokeWidth={2.5} />
-          MindBalance
+        <span className="sidebar-logo text-gradient-cyan" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <img 
+            src="/favicon.svg" 
+            alt="MindBalance Logo" 
+            style={{ width: '28px', height: '28px', objectFit: 'contain' }} 
+          />
+          <span>MindBalance</span>
         </span>
         <button 
           className="menu-toggle-btn" 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Wind, Lock, Mail, ShieldAlert } from 'lucide-react';
+import { Lock, Mail, ShieldAlert } from 'lucide-react';
 
 export const AuthShell: React.FC = () => {
   const { login, signup, loginWithGoogle } = useAuth();
@@ -63,14 +63,15 @@ export const AuthShell: React.FC = () => {
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '56px',
-            height: '56px',
-            borderRadius: '16px',
-            backgroundColor: 'var(--accent-primary-light)',
-            color: 'var(--accent-primary)',
+            width: '64px',
+            height: '64px',
             marginBottom: '12px'
           }}>
-            <Wind size={30} strokeWidth={2.5} />
+            <img 
+              src="/favicon.svg" 
+              alt="MindBalance Logo" 
+              style={{ width: '56px', height: '56px', objectFit: 'contain' }} 
+            />
           </div>
           <h1 style={{ fontSize: '1.75rem', fontWeight: 800 }} className="text-gradient-cyan">MindBalance</h1>
           <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
